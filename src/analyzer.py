@@ -46,9 +46,11 @@ class Analyzer:
         prompt = prompt_template.replace("{transcript}", transcript_text)
         
         # Get LLM response
+        print(f"  → Analyzing content with LLM...")
         response = self.llm.complete(prompt)
         
         # Parse JSON from response
+        print(f"  → Parsing analysis results...")
         analysis = self._parse_response(response)
         
         return analysis

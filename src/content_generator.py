@@ -46,9 +46,10 @@ class ContentGenerator:
             transcript = json.load(f)
         
         output_path = Path(output_dir)
+        total = len(self.CONTENT_TYPES)
         
-        for content_type, prompt_file, output_file in self.CONTENT_TYPES:
-            print(f"  Generating {content_type}...")
+        for idx, (content_type, prompt_file, output_file) in enumerate(self.CONTENT_TYPES, 1):
+            print(f"  → Generating {content_type.replace('_', ' ')} ({idx}/{total})...")
             content = self.generate(
                 content_type,
                 transcript,

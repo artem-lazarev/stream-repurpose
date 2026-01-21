@@ -1,5 +1,6 @@
 whisper:
   model_path: "/Users/artemlazarev/Library/Application Support/MacWhisper/models/ggml-model-whisper-turbo.bin"
+  whisper_cpp_path: "vendor/whisper.cpp"
 
 llm:
   provider: "openai"  # Options: "openai", "anthropic", "ollama"

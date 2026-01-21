@@ -36,24 +36,30 @@ class VideoProcessor:
         
         # Process long-form video
         if "long_form" in analysis:
+            print(f"  → Creating long-form video...")
             long_form_output = output_path / "long_form.mp4"
             self._process_long_form(
                 input_path,
                 analysis["long_form"],
                 str(long_form_output)
             )
+            print(f"  → Long-form video saved")
         
         # Process short-form clips
         if "short_form" in analysis:
             shorts_dir = output_path / "shorts"
             shorts_dir.mkdir(parents=True, exist_ok=True)
-            for i, clip in enumerate(analysis["short_form"]):
-                clip_output = shorts_dir / f"short_{i+1:02d}.mp4"
+            total_clips = len(analysis["short_form"])
+            print(f"  → Creating {total_clips} short-form clips...")
+            for i, clip in enumerate(analysis["short_form"], 1):
+                clip_output = shorts_dir / f"short_{i:02d}.mp4"
                 self._process_short_form(
                     input_path,
                     clip,
                     str(clip_output)
                 )
+                print(f"    • Clip {i}/{total_clips} complete")
+            print(f"  → All short-form clips saved")
     
     def _process_long_form(self, input_path: str, segments: list, output_path: str):
         """

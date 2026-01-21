@@ -76,55 +76,75 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "videos" / "shorts").mkdir(parents=True, exist_ok=True)
     
-    print(f"Processing: {input_path}")
-    print(f"Output directory: {output_dir}")
+    print("\n" + "="*60)
+    print(f"Stream Repurposing Pipeline")
+    print("="*60)
+    print(f"Input:  {input_path}")
+    print(f"Output: {output_dir}")
+    print("="*60 + "\n")
     
     # Step 1: Transcription
     transcript_path = output_dir / "transcript.json"
     if args.skip_transcription and transcript_path.exists():
-        print("Skipping transcription (using existing transcript.json)")
+        print("[1/4] Skipping transcription (using existing transcript.json)")
     else:
-        print("\n[1/4] Transcribing audio...")
-        transcriber = Transcriber(config["whisper"]["model_path"])
+        print("[1/4] Transcribing audio...")
+        whisper_cpp_path = config["whisper"].get("whisper_cpp_path", "vendor/whisper.cpp")
+        transcriber = Transcriber(
+            config["whisper"]["model_path"],
+            whisper_cpp_path=whisper_cpp_path
+        )
         transcriber.transcribe(str(input_path), str(transcript_path))
-        print(f"Transcript saved to: {transcript_path}")
+        print(f"  ✓ Transcript saved: {transcript_path.name}\n")
     
     # Step 2: LLM Analysis
-    print("\n[2/4] Analyzing transcript...")
+    print("[2/4] Analyzing transcript...")
     analyzer = Analyzer(config["llm"])
     analysis = analyzer.analyze(str(transcript_path))
     analysis_path = output_dir / "analysis.json"
     analyzer.save_analysis(analysis, str(analysis_path))
-    print(f"Analysis saved to: {analysis_path}")
+    print(f"  ✓ Analysis saved: {analysis_path.name}\n")
     
     # Step 3: Video Processing
     if not args.skip_video:
-        print("\n[3/4] Processing video segments...")
+        print("[3/4] Processing video segments...")
         processor = VideoProcessor(config.get("video", {}))
         processor.process(
             str(input_path),
             analysis,
             str(output_dir / "videos")
         )
-        print("Video processing complete")
+        print(f"  ✓ Video processing complete\n")
     else:
-        print("\n[3/4] Skipping video processing")
+        print("[3/4] Skipping video processing\n")
     
     # Step 4: Text Content Generation
     if not args.skip_text:
-        print("\n[4/4] Generating text content...")
+        print("[4/4] Generating text content...")
         generator = ContentGenerator(config["llm"])
         generator.generate_all(
             str(transcript_path),
             analysis,
             str(output_dir)
         )
-        print("Text content generation complete")
+        print(f"  ✓ Text content generation complete\n")
     else:
-        print("\n[4/4] Skipping text content generation")
+        print("[4/4] Skipping text content generation\n")
     
-    print(f"\nDone! All outputs saved to: {output_dir}")
+    print("="*60)
+    print(f"✓ Pipeline complete! All outputs saved to:")
+    print(f"  {output_dir}")
+    print("="*60)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\nInterrupted by user")
+        sys.exit(130)
+    except Exception as e:
+        print(f"\n\nError: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)

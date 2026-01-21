@@ -19,6 +19,7 @@ ENV/
 # Output files
 output/
 *.mp4
+*.wav
 *.json
 # Don't exclude README.md, but exclude generated markdown files
 output/**/*.md
@@ -38,4 +39,9 @@ Thumbs.db
 # Test files
 test_*.mp4
 *.test
+
+# Docs
+PLAN.md
+just-use-this-to-launch-full-pipeline.md
+
 

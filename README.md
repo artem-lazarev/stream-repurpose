@@ -2,6 +2,12 @@
 
 A powerful Python pipeline that automatically transcribes stream recordings, analyzes content with AI, and generates multiple content formats for various platforms. Transform a single stream recording into YouTube videos, Twitter threads, Reddit posts, Medium articles, and more.
 
+## 🚀 Quick Links
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Step-by-step setup guide (start here!)
+- **[CHEATSHEET.md](CHEATSHEET.md)** - Quick reference for common commands
+- **[FIXES.md](FIXES.md)** - Technical documentation of recent fixes
+
 ## 🎯 Overview
 
 This tool takes a stream recording (MP4 video file) and automatically:
@@ -15,7 +21,7 @@ All outputs are saved as files for manual review before publishing.
 
 ## ✨ Features
 
-- **Local Transcription**: Uses Whisper GGML models (no API costs, works offline)
+- **Local Transcription**: Uses whisper.cpp with Whisper GGML models (no API costs, works offline, Metal GPU acceleration on Apple Silicon)
 - **Multi-LLM Support**: Works with OpenAI, Anthropic Claude, or local Ollama
 - **Intelligent Content Analysis**: AI identifies valuable segments, viral moments, and key highlights
 - **Video Processing**: Automatically creates:
@@ -34,7 +40,7 @@ All outputs are saved as files for manual review before publishing.
 
 ```mermaid
 flowchart TD
-    Start([📹 Input MP4 Video]) --> Transcribe[🎤 Whisper Transcription<br/>Local GGML Model]
+    Start([📹 Input MP4 Video]) --> Transcribe[🎤 Whisper Transcription<br/>whisper.cpp CLI + Metal GPU]
     
     Transcribe --> Transcript[(📄 Timestamped Transcript<br/>JSON)]
     
@@ -78,7 +84,8 @@ flowchart TD
 
 - Python 3.9+
 - FFmpeg (for video processing)
-- A Whisper GGML model file (or use built-in models)
+- Xcode Command Line Tools (macOS) or build tools (Linux)
+- A Whisper GGML model file
 - An LLM API key (OpenAI, Anthropic, or local Ollama)
 
 ## 🚀 Installation
@@ -118,17 +125,41 @@ sudo apt-get install ffmpeg
 **Windows:**
 Download from [ffmpeg.org](https://ffmpeg.org/download.html) or use `choco install ffmpeg`
 
-### 5. Get a Whisper Model
+### 5. Build whisper.cpp
 
-You have two options:
+The transcription uses whisper.cpp directly for maximum reliability and performance. Build it using CMake:
 
-**Option A: Use a local GGML model file**
-- Download a Whisper GGML model (e.g., from [MacWhisper](https://goodsnooze.gumroad.com/l/macwhisper) or [whisper.cpp releases](https://github.com/ggerganov/whisper.cpp/releases))
-- Update the `model_path` in `config.yaml`
+```bash
+# Clone whisper.cpp into vendor directory
+mkdir -p vendor
+cd vendor
+git clone https://github.com/ggerganov/whisper.cpp
+cd whisper.cpp
 
-**Option B: Use built-in models**
-- The pipeline will automatically download models like `tiny`, `base`, `small`, `medium`, `large-v3-turbo`
-- Just use the model name in your config
+# Build using CMake (recommended)
+cmake -B build
+cmake --build build -j --config Release
+
+# Verify the build
+ls -la build/bin/whisper-cli
+```
+
+**Note**: The pipeline automatically disables Metal GPU acceleration due to buffer allocation issues on some systems. CPU-based transcription using Accelerate framework is fast and reliable on Apple Silicon.
+
+### 6. Get a Whisper Model
+
+You need a Whisper GGML model file. Download one from:
+
+- [MacWhisper](https://goodsnooze.gumroad.com/l/macwhisper) models
+- Or use whisper.cpp's download script:
+  ```bash
+  cd vendor/whisper.cpp
+  ./models/download-ggml-model.sh base.en
+  # or: ./models/download-ggml-model.sh medium
+  # or: ./models/download-ggml-model.sh large-v3
+  ```
+
+Then update the `model_path` in `config.yaml` to point to your model file.
 
 ## ⚙️ Configuration
 
@@ -137,7 +168,7 @@ Edit `config.yaml` to configure the pipeline:
 ```yaml
 whisper:
   model_path: "/path/to/your/ggml-model-whisper-turbo.bin"
-  # OR use a model name: "large-v3-turbo"
+  whisper_cpp_path: "vendor/whisper.cpp"  # Path to whisper.cpp repository
 
 llm:
   provider: "openai"  # Options: "openai", "anthropic", "ollama"
@@ -180,17 +211,54 @@ export ANTHROPIC_API_KEY="your-api-key-here"
 
 ## 📖 Usage
 
-### Basic Usage
+### Quick Start - Transcription Only
 
-```bash
-python main.py stream-1-raw.mp4
-```
+If you just want to transcribe a video without running the LLM analysis or generating content:
+
+1. **Activate your virtual environment:**
+   ```bash
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+2. **Run transcription only:**
+   ```bash
+   python main.py your-video.mp4 --skip-video --skip-text
+   ```
 
 This will:
-1. Transcribe the video
-2. Analyze the transcript with the LLM
-3. Generate video clips
-4. Create all text content formats
+- Automatically convert MP4/video files to WAV format (required by whisper.cpp)
+- Transcribe using whisper.cpp (CPU-only for stability)
+- Save transcript to `output/your-video/transcript.json`
+- Skip LLM analysis, video processing, and text generation
+
+### Quick Start - Full Pipeline
+
+1. **Activate your virtual environment:**
+   ```bash
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+2. **Set your LLM API key:**
+   ```bash
+   export OPENAI_API_KEY="your-api-key-here"
+   # Or for Anthropic:
+   # export ANTHROPIC_API_KEY="your-api-key-here"
+   ```
+
+3. **Run the full pipeline:**
+   ```bash
+   python main.py stream-1-raw.mp4
+   ```
+
+### What Happens
+
+The pipeline automatically:
+1. **Transcribes** the video using whisper.cpp (with Metal GPU acceleration on Apple Silicon)
+2. **Analyzes** the transcript with the LLM to identify key segments and highlights
+3. **Generates** video clips (long-form and short-form vertical clips)
+4. **Creates** all text content formats (Twitter, Reddit, Medium, Telegram, etc.)
+
+All outputs are saved to `output/{stream_name}/` for review before publishing.
 
 ### Advanced Options
 
@@ -268,12 +336,59 @@ stream-repurpose/
 
 ### Transcription Issues
 
-**Problem**: Model fails to load
-- **Solution**: Check that the model path in `config.yaml` is correct
-- **Alternative**: Use a built-in model name like `"large-v3-turbo"`
+**Problem**: whisper-cli not found or build directory doesn't exist
+- **Solution**: Build whisper.cpp using CMake (not make):
+  ```bash
+  cd vendor/whisper.cpp
+  cmake -B build
+  cmake --build build -j --config Release
+  ```
+- **Check**: Verify `vendor/whisper.cpp/build/bin/whisper-cli` exists
 
-**Problem**: Metal/GPU allocation errors on macOS
-- **Solution**: The pipeline will fall back to CPU automatically. This is normal.
+**Problem**: Segmentation fault (exit code 139) or Metal buffer allocation error
+- **Symptoms**: 
+  - `ggml_metal_buffer_init: error: failed to allocate buffer`
+  - Process crashes with SIGSEGV
+- **Solution**: This is automatically handled! The transcriber now:
+  - Disables GPU acceleration (uses `--no-gpu` flag)
+  - Runs on CPU with Accelerate framework (still very fast on Apple Silicon)
+- **Manual Test**: You can test whisper-cli directly:
+  ```bash
+  # This should work now:
+  vendor/whisper.cpp/build/bin/whisper-cli \
+    -m vendor/whisper.cpp/models/for-tests-ggml-tiny.bin \
+    -f vendor/whisper.cpp/samples/jfk.wav \
+    --no-gpu
+  ```
+
+**Problem**: Input file format not supported
+- **Solution**: The pipeline now automatically converts MP4 and other formats to WAV
+- **Details**: whisper-cli only supports 16-bit WAV files at 16kHz mono
+- **Manual Conversion** (if needed):
+  ```bash
+  ffmpeg -i input.mp4 -ar 16000 -ac 1 -c:a pcm_s16le output.wav
+  ```
+
+**Problem**: Model fails to load
+- **Solution**: Check that the model path in `config.yaml` is correct and the file exists
+- **Verify**: The config should point to a valid GGML model file:
+  ```yaml
+  whisper:
+    model_path: "/path/to/ggml-model-whisper-turbo.bin"
+  ```
+
+**Problem**: Build errors on macOS
+- **Solution**: Make sure Xcode Command Line Tools are installed:
+  ```bash
+  xcode-select --install
+  ```
+
+**Problem**: Python dependencies missing
+- **Solution**: Make sure you've installed all requirements:
+  ```bash
+  source venv/bin/activate
+  pip install -r requirements.txt
+  ```
 
 ### LLM API Issues
 
@@ -328,12 +443,11 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-[Add your license here - MIT, Apache 2.0, etc.]
+MIT
 
 ## 🙏 Acknowledgments
 
-- [whisper.cpp](https://github.com/ggerganov/whisper.cpp) for the Whisper implementation
-- [pywhispercpp](https://github.com/absadiki/pywhispercpp) for Python bindings
+- [whisper.cpp](https://github.com/ggerganov/whisper.cpp) - C++ implementation of Whisper with Metal GPU acceleration
 - OpenAI for Whisper and GPT models
 - Anthropic for Claude models
 
