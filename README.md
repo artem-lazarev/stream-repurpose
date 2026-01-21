@@ -65,13 +65,13 @@ flowchart TD
     
     Output --> Review[✅ Manual Review<br/>& Publishing]
     
-    style Start fill:#e1f5ff
-    style Transcribe fill:#fff4e6
-    style Analyze fill:#f3e5f5
-    style VideoBranch fill:#e8f5e9
-    style TextBranch fill:#fff3e0
-    style Output fill:#f1f8e9
-    style Review fill:#e3f2fd
+    style Start fill:#e1f5ff,color:#000000
+    style Transcribe fill:#fff4e6,color:#000000
+    style Analyze fill:#f3e5f5,color:#000000
+    style VideoBranch fill:#e8f5e9,color:#000000
+    style TextBranch fill:#fff3e0,color:#000000
+    style Output fill:#f1f8e9,color:#000000
+    style Review fill:#e3f2fd,color:#000000
 ```
 
 ## 📋 Requirements
