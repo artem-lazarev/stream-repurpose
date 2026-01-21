@@ -32,10 +32,46 @@ All outputs are saved as files for manual review before publishing.
 
 ## 🏗️ Architecture
 
-```
-Input MP4 → Whisper Transcription → LLM Analysis → Video Processing + Text Generation
-                                              ↓
-                    Long-form Video | Short Clips | Twitter | Reddit | Medium | etc.
+```mermaid
+flowchart TD
+    Start([📹 Input MP4 Video]) --> Transcribe[🎤 Whisper Transcription<br/>Local GGML Model]
+    
+    Transcribe --> Transcript[(📄 Timestamped Transcript<br/>JSON)]
+    
+    Transcript --> Analyze[🤖 LLM Analysis<br/>OpenAI/Anthropic/Ollama]
+    
+    Analyze --> Analysis[(📊 Content Analysis<br/>Segments & Highlights)]
+    
+    Analysis --> VideoBranch[🎬 Video Processing]
+    Analysis --> TextBranch[✍️ Text Generation]
+    
+    VideoBranch --> FFmpeg[🔧 FFmpeg Processing]
+    FFmpeg --> LongForm[📺 Long-form Video<br/>YouTube-ready]
+    FFmpeg --> ShortForm[📱 Short Clips<br/>9:16 Vertical Format]
+    
+    TextBranch --> Twitter[🐦 Twitter Thread]
+    TextBranch --> Tweets[💬 Individual Tweets]
+    TextBranch --> Reddit[🔴 Reddit Post]
+    TextBranch --> Medium[📰 Medium Article]
+    TextBranch --> Telegram[💬 Telegram Post]
+    
+    LongForm --> Output[📁 Output Directory]
+    ShortForm --> Output
+    Twitter --> Output
+    Tweets --> Output
+    Reddit --> Output
+    Medium --> Output
+    Telegram --> Output
+    
+    Output --> Review[✅ Manual Review<br/>& Publishing]
+    
+    style Start fill:#e1f5ff
+    style Transcribe fill:#fff4e6
+    style Analyze fill:#f3e5f5
+    style VideoBranch fill:#e8f5e9
+    style TextBranch fill:#fff3e0
+    style Output fill:#f1f8e9
+    style Review fill:#e3f2fd
 ```
 
 ## 📋 Requirements
