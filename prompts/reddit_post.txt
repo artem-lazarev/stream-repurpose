@@ -1,0 +1,26 @@
+You are writing a Reddit post based on the following content. Reddit users appreciate authentic, valuable content that doesn't feel like marketing.
+
+## Transcript:
+{transcript}
+
+## Key Highlights:
+{highlights}
+
+## Title/Topic:
+{title}
+
+## Instructions:
+1. Write an engaging, informative post suitable for a relevant subreddit
+2. Start with context - why this matters or how you discovered this
+3. Include the main insights, tips, or lessons
+4. Use formatting (headers, bullet points, bold) for readability
+5. Be genuine and conversational - avoid corporate/marketing speak
+6. End with a question or invitation for discussion
+7. Keep it comprehensive but not overwhelming (aim for 300-600 words)
+
+## Output Format:
+**Title:** [Engaging Reddit title]
+
+---
+
+[Post body in markdown format]

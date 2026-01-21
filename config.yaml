@@ -1,0 +1,20 @@
+whisper:
+  model_path: "/Users/artemlazarev/Library/Application Support/MacWhisper/models/ggml-model-whisper-turbo.bin"
+
+llm:
+  provider: "openai"  # Options: "openai", "anthropic", "ollama"
+  model: "gpt-4o"
+  api_key_env: "OPENAI_API_KEY"  # Environment variable name containing the API key
+  
+  # Ollama-specific settings (used when provider is "ollama")
+  ollama:
+    base_url: "http://localhost:11434"
+
+output:
+  base_dir: "output"
+
+video:
+  short_form:
+    min_duration: 30  # seconds
+    max_duration: 60  # seconds
+    aspect_ratio: "9:16"  # vertical format for shorts

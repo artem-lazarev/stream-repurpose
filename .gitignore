@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Output files
+output/
+*.mp4
+*.json
+# Don't exclude README.md, but exclude generated markdown files
+output/**/*.md
+
+# Config with secrets (if you accidentally commit keys)
+config.local.yaml
+config.secrets.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/tmp/
+
+# Test files
+test_*.mp4
+*.test
+

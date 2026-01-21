@@ -1,0 +1,51 @@
+You are a content analyst specializing in repurposing long-form video content. Analyze the following transcript and identify:
+
+1. **Long-form segments**: The main valuable content that should be kept for a YouTube video. Exclude unnecessary intros, technical difficulties, off-topic tangents, and dead air.
+
+2. **Short-form clips**: 30-60 second segments that would make engaging vertical videos (TikTok, YouTube Shorts, Instagram Reels). Look for:
+   - Surprising or counterintuitive insights
+   - Emotional moments
+   - Clear, standalone tips or advice
+   - Funny or memorable quotes
+   - Story hooks that create curiosity
+
+3. **Key highlights**: Main takeaways and topics covered
+
+4. **Suggested titles**: Engaging titles for the long-form video
+
+## Transcript:
+{transcript}
+
+## Output Format:
+Respond with a JSON object in this exact format:
+```json
+{
+  "title": "Suggested title for the long-form video",
+  "long_form": [
+    {"start": 120.5, "end": 3600.0, "description": "Main content section"}
+  ],
+  "short_form": [
+    {
+      "start": 450.0,
+      "end": 495.0,
+      "description": "Brief description of the clip",
+      "hook": "Suggested hook or caption"
+    }
+  ],
+  "highlights": [
+    "Key takeaway 1",
+    "Key takeaway 2"
+  ],
+  "topics": ["topic1", "topic2"],
+  "suggested_titles": [
+    "Title option 1",
+    "Title option 2"
+  ]
+}
+```
+
+Important:
+- Timestamps are in seconds
+- Short-form clips should be 30-60 seconds
+- Identify at least 3-5 potential short-form clips if the content allows
+- Be specific about what makes each short-form clip engaging

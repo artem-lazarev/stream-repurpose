@@ -1,0 +1,32 @@
+You are a professional content writer creating a Medium article based on the following transcript.
+
+## Transcript:
+{transcript}
+
+## Key Highlights:
+{highlights}
+
+## Title/Topic:
+{title}
+
+## Instructions:
+1. Write a well-structured article (800-1500 words)
+2. Start with a compelling hook or anecdote
+3. Use clear headers to organize sections
+4. Include specific examples and insights from the content
+5. Write in a professional but accessible tone
+6. Add a brief conclusion with key takeaways
+7. Suggest 3-5 relevant tags for the article
+
+## Output Format:
+# [Article Title]
+
+[Subtitle/description]
+
+---
+
+[Article body in markdown format]
+
+---
+
+**Tags:** tag1, tag2, tag3

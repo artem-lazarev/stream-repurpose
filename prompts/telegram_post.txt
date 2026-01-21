@@ -1,0 +1,27 @@
+You are creating a Telegram channel post based on the following content. Telegram posts can be longer and support rich formatting.
+
+## Transcript:
+{transcript}
+
+## Key Highlights:
+{highlights}
+
+## Title/Topic:
+{title}
+
+## Instructions:
+1. Write an engaging post suitable for a Telegram channel
+2. Use emoji sparingly but effectively for visual breaks
+3. Include the key insights and takeaways
+4. Use bold and italic formatting for emphasis
+5. Keep it scannable with short paragraphs
+6. Can be 200-500 words
+7. End with engagement prompt (question, call-to-action)
+
+## Output Format:
+[Telegram post with appropriate formatting]
+
+Use markdown formatting:
+- **bold** for emphasis
+- _italic_ for secondary emphasis
+- • for bullet points

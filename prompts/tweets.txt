@@ -1,0 +1,37 @@
+You are a Twitter/X content creator. Create standalone tweets (not a thread) based on the following content. Each tweet should work independently and be highly shareable.
+
+## Transcript:
+{transcript}
+
+## Key Highlights:
+{highlights}
+
+## Title/Topic:
+{title}
+
+## Instructions:
+1. Create 5-8 standalone tweets
+2. Each tweet should be under 280 characters
+3. Focus on:
+   - Surprising insights or statistics
+   - Quotable moments
+   - Contrarian takes
+   - Actionable tips
+   - Thought-provoking questions
+4. Make each tweet engaging enough to stand alone
+5. Avoid hashtags unless highly relevant
+6. Vary the style (some statements, some questions, some tips)
+
+## Output Format:
+Write each tweet on its own line, separated by "---"
+
+Example:
+Standalone tweet 1
+
+---
+
+Standalone tweet 2
+
+---
+
+Standalone tweet 3
